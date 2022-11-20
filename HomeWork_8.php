@@ -22,23 +22,23 @@ class TelegraphText{
         $type = serialize($texts);
         file_put_contents($this->slug.".txt", $texts);
             }
-        public function loadText(){
-            if (file_exists($this -> slug)){
-                $texts2 = file_get_contents($this -> slug);
-            } else {
-                print_r('Файла с таким именем не существует');
-            }
-            $arrText2 = explode(PHP_EOL, $texts2);
-            $this -> text = $arrText2[0];
-            $this -> title = $arrText2[1];
-            $this -> author = $arrText2[2];
-            $this -> published = $arrText2[3];
-            $arrText = [
-                'text' => $this -> text,
-                'title' => $this -> title,
-                'author' => $this -> author,
-                'published' => $this -> published
-            ];
+    public function loadText(){
+        if (file_exists($this -> slug)){
+            $texts2 = file_get_contents($this -> slug);
+        } else {
+            print_r('Файла с таким именем не существует');
+        }
+        $arrText2 = explode(PHP_EOL, $texts2);
+        $this -> text = $arrText2[0];
+        $this -> title = $arrText2[1];
+        $this -> author = $arrText2[2];
+        $this -> published = $arrText2[3];
+        $arrText = [
+            'text' => $this -> text,
+            'title' => $this -> title,
+            'author' => $this -> author,
+            'published' => $this -> published
+        ];
         }
         public function editText($text, $title){
             $this -> text = $text;
