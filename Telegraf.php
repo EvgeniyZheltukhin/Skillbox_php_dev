@@ -2,17 +2,16 @@
 
 use Cassandra\Date;
 abstract class Storage{
-    abstract function create($slug);
-    abstract function read($slug);
-    abstract function update($slug);
-    abstract function delete($slug);
+    abstract function create(TelegraphText $slug);
+    abstract function read(TelegraphText $slug);
+    abstract function update(TelegraphText $slug, TelegraphText $telegraphText, TelegraphText $telegraphTextNew);
+    abstract function delete(TelegraphText $slug, TelegraphText $telegraphText);
     abstract function list();
 }
 abstract class View{
     public $storage;
-    public function __construct(){
-
-
+    public function __construct(Storage $storage){
+        $this ->storage = $storage;
     }
     abstract function displayTextById($id);
     abstract function displayTextByUrl($url);
@@ -24,11 +23,11 @@ abstract class User{
     abstract function getTextToEdit();
     }
 class FileStorage extends Storage{
-    public $title, $text, $author, $published, $slug;
+    public $slug;
 
-    public function create($slug)
+
+    public function create(TelegraphText $slug)
     {
-
         $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s");
         $i = 1;
         while (file_exists($fileName)){
@@ -36,35 +35,44 @@ class FileStorage extends Storage{
             $i++;
         }
         $this->slug = $fileName;
-
-        $texts = [
-            "text" => $this->text . PHP_EOL,
-            "title" => $this->title . PHP_EOL,
-            "author" => $this->author . PHP_EOL,
-            "published" => $this->published . PHP_EOL
-        ];
-        file_put_contents($fileName, $texts);
         return $this -> slug;
     }
 
-    function read($slug)
+    function read(TelegraphText $slug)
     {
-        // TODO: Implement read() method.
+        $data = new TelegraphText();
+        if (file_exists($this->slug)) {
+            return unserialize($data);
+        } else {
+            print_r('Файла с таким именем не существует');
+        }
+
     }
 
-    function update($slug)
+    function update(TelegraphText $slug, TelegraphText $telegraphText, TelegraphText $telegraphTextNew)
     {
-        // TODO: Implement update() method.
+        if (file_exists($this->slug)) {
+            $telegraphText = $telegraphTextNew;
+        } else {
+            print_r('Файла с таким именем не существует');
+        }
     }
 
-    function delete($slug)
+    function delete(TelegraphText $slug, TelegraphText $telegraphText)
     {
-        // TODO: Implement delete() method.
+        $telegraphText = new TelegraphText();
+        if (file_exists($this->slug)) {
+            unset($telegraphText);
+        } else {
+            print_r('Файла с таким именем не существует');
+        }
     }
 
     function list()
     {
-        // TODO: Implement list() method.
+        $directory = 'C:\xampp\htdocs\Skillbox_php_dev';
+        $scannedDir = scandir($directory);
+        unserialize($scannedDir, $objects = []);
     }
 }
 class TelegraphText
@@ -72,8 +80,9 @@ class TelegraphText
     public $title, $text, $author, $published, $slug;
 
 
-    public function __construct(string $author, string $slug)
+    public function __construct(string $author, string $slug, FileStorage $newObject)
     {
+        $this -> newObject = $newObject;
         $this->author = $author;
         $this->slug = $slug;
         $this->published = \date("d.m.y h:m:s");
@@ -119,7 +128,8 @@ class TelegraphText
 
 }
 
-$textTest = new TelegraphText('Evgeniy', 'Test');
+$newObject =new FileStorage();
+$textTest = new TelegraphText('Evgeniy', 'Test', $newObject);
 $textTest->text = 'My name is Evgeniy';
 $textTest->title = 'My name';
 $textTest->storeText();
@@ -127,7 +137,9 @@ print_r($textTest);
 $textTest->editText('Привет', 'Как твои дела?');
 print_r($textTest);
 
-$textTest2 = new TelegraphText('', 'test2.txt');
+$textTest2 = new TelegraphText('', 'test2.txt', $newObject);
 $textTest2->loadText();
 print_r($textTest2);
+
+
 
