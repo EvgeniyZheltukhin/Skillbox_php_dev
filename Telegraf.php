@@ -2,10 +2,10 @@
 
 use Cassandra\Date;
 abstract class Storage{
-    abstract function create(TelegraphText $slug);
-    abstract function read(TelegraphText $slug);
-    abstract function update(TelegraphText $slug, TelegraphText $telegraphText, TelegraphText $telegraphTextNew);
-    abstract function delete(TelegraphText $slug, TelegraphText $telegraphText);
+    abstract function create(string $slug);
+    abstract function read(string $slug);
+    abstract function update(string $slug, TelegraphText $telegraphText);
+    abstract function delete(string $slug);
     abstract function list();
 }
 abstract class View{
@@ -26,7 +26,7 @@ class FileStorage extends Storage{
     public $slug;
 
 
-    public function create(TelegraphText $slug)
+    public function create($slug)
     {
         $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s");
         $i = 1;
@@ -38,7 +38,7 @@ class FileStorage extends Storage{
         return $this -> slug;
     }
 
-    function read(TelegraphText $slug)
+    function read($slug)
     {
         $data = new TelegraphText();
         if (file_exists($this->slug)) {
@@ -49,8 +49,9 @@ class FileStorage extends Storage{
 
     }
 
-    function update(TelegraphText $slug, TelegraphText $telegraphText, TelegraphText $telegraphTextNew)
+    function update($slug, TelegraphText $telegraphText)
     {
+        $telegraphTextNew = [];
         if (file_exists($this->slug)) {
             $telegraphText = $telegraphTextNew;
         } else {
@@ -58,7 +59,7 @@ class FileStorage extends Storage{
         }
     }
 
-    function delete(TelegraphText $slug, TelegraphText $telegraphText)
+    function delete($slug)
     {
         $telegraphText = new TelegraphText();
         if (file_exists($this->slug)) {
@@ -80,9 +81,9 @@ class TelegraphText
     public $title, $text, $author, $published, $slug;
 
 
-    public function __construct(string $author, string $slug, FileStorage $newObject)
+    public function __construct(string $author, string $slug)
     {
-        $this -> newObject = $newObject;
+        $newObject = new FileStorage();
         $this->author = $author;
         $this->slug = $slug;
         $this->published = \date("d.m.y h:m:s");
