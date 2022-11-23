@@ -1,5 +1,4 @@
 <?php
-
 use Cassandra\Date;
 abstract class Storage{
     abstract function create(string $slug);
@@ -15,8 +14,6 @@ abstract class View{
     }
     abstract function displayTextById($id);
     abstract function displayTextByUrl($url);
-
-
 }
 abstract class User{
     public $id, $name, $role;
@@ -24,8 +21,6 @@ abstract class User{
     }
 class FileStorage extends Storage{
     public $slug;
-
-
     public function create($slug)
     {
         $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s");
