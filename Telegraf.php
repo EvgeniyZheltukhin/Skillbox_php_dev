@@ -29,7 +29,9 @@ class FileStorage extends Storage{
             $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s").$i;
             $i++;
         }
+        
         $this->slug = $fileName;
+        file_put_contents($this ->slug, seralize(TelegraphText));
         return $this -> slug;
     }
 
@@ -78,7 +80,6 @@ class TelegraphText
 
     public function __construct(string $author, string $slug)
     {
-        $newObject = new FileStorage();
         $this->author = $author;
         $this->slug = $slug;
         $this->published = \date("d.m.y h:m:s");
@@ -87,10 +88,10 @@ class TelegraphText
     public function storeText()
     {
         $texts = [
-            "text" => $this->text . PHP_EOL,
-            "title" => $this->title . PHP_EOL,
-            "author" => $this->author . PHP_EOL,
-            "published" => $this->published . PHP_EOL
+            "text" => $this->text,
+            "title" => $this->title,
+            "author" => $this->author,
+            "published" => $this->published
         ];
         $type = serialize($texts);
         file_put_contents($this->slug . ".txt", $texts);
