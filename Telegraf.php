@@ -21,17 +21,18 @@ abstract class User{
     }
 class FileStorage extends Storage{
     public $slug;
-    public function create($textTest):string
+    public function create($slug)
     {
-        $fileName = $textTest-> slug. ".txt". '_'. \date("d.m.y h:m:s");
+        $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s");
         $i = 1;
         while (file_exists($fileName)){
-            $fileName = $textTest-> slug. ".txt". '_'. \date("d.m.y h:m:s").$i;
+            $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s").$i;
             $i++;
         }
-        $textTest->slug = $fileName;
-        file_put_contents($fileName, serialize($textTest));
-        return $fileName;
+
+        $this->slug = $fileName;
+        file_put_contents($this ->slug, seralize(TelegraphText));
+        return $this -> slug;
     }
 
     public function read($slug)
@@ -44,12 +45,12 @@ class FileStorage extends Storage{
         return $arrayStorage['text'];
     }
 
-    public function update($slug, $textTest)
+    public function update($slug, $object)
     {
         $this->slug = $slug;
 
         if ( file_exists($this->slug)) {
-            file_put_contents($this->slug, serialize($textTest), FILE_USE_INCLUDE_PATH);
+            file_put_contents($this->slug, serialize($object), FILE_USE_INCLUDE_PATH);
         } else {
             return false;
         }
@@ -80,7 +81,6 @@ class TelegraphText
 
     public function __construct(string $author, string $slug)
     {
-        $newObject = new FileStorage();
         $this->author = $author;
         $this->slug = $slug;
         $this->published = \date("d.m.y h:m:s");
@@ -89,10 +89,10 @@ class TelegraphText
     public function storeText()
     {
         $texts = [
-            "text" => $this->text . PHP_EOL,
-            "title" => $this->title . PHP_EOL,
-            "author" => $this->author . PHP_EOL,
-            "published" => $this->published . PHP_EOL
+            "text" => $this->text,
+            "title" => $this->title,
+            "author" => $this->author,
+            "published" => $this->published
         ];
         $type = serialize($texts);
         file_put_contents($this->slug . ".txt", $texts);
