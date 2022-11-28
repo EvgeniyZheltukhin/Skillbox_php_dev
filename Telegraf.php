@@ -44,7 +44,6 @@ class FileStorage extends Storage{
 
         return $arrayStorage['text'];
     }
-
     public function update($slug, $object)
     {
         $this->slug = $slug;
