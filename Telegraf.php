@@ -29,32 +29,31 @@ class FileStorage extends Storage{
             $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s").$i;
             $i++;
         }
-        
         $this->slug = $fileName;
-        file_put_contents($this ->slug, seralize(TelegraphText));
         return $this -> slug;
     }
 
-    function read($slug)
+    public function read($slug)
     {
-        $data = new TelegraphText();
-        if (file_exists($this->slug)) {
-            return unserialize($data);
-        } else {
-            print_r('Файла с таким именем не существует');
-        }
+        $this->slug = $slug;
+        $arrayStorage = [];
 
+        $arrayStorage = unserialize(file_get_contents($this->slug), $arrayStorage);
+
+        return $arrayStorage['text'];
     }
 
-    function update($slug, TelegraphText $telegraphText)
+    public function update($slug, $object)
     {
-        $telegraphTextNew = [];
-        if (file_exists($this->slug)) {
-            $telegraphText = $telegraphTextNew;
+        $this->slug = $slug;
+
+        if ( file_exists($this->slug)) {
+            file_put_contents($this->slug, serialize($object), FILE_USE_INCLUDE_PATH);
         } else {
-            print_r('Файла с таким именем не существует');
+            return false;
         }
     }
+
 
     function delete($slug)
     {
@@ -80,6 +79,7 @@ class TelegraphText
 
     public function __construct(string $author, string $slug)
     {
+        $newObject = new FileStorage();
         $this->author = $author;
         $this->slug = $slug;
         $this->published = \date("d.m.y h:m:s");
@@ -88,10 +88,10 @@ class TelegraphText
     public function storeText()
     {
         $texts = [
-            "text" => $this->text,
-            "title" => $this->title,
-            "author" => $this->author,
-            "published" => $this->published
+            "text" => $this->text . PHP_EOL,
+            "title" => $this->title . PHP_EOL,
+            "author" => $this->author . PHP_EOL,
+            "published" => $this->published . PHP_EOL
         ];
         $type = serialize($texts);
         file_put_contents($this->slug . ".txt", $texts);
