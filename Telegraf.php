@@ -21,16 +21,17 @@ abstract class User{
     }
 class FileStorage extends Storage{
     public $slug;
-    public function create($slug)
+    public function create($textTest):string
     {
-        $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s");
+        $fileName = $textTest-> slug. ".txt". '_'. \date("d.m.y h:m:s");
         $i = 1;
         while (file_exists($fileName)){
-            $fileName = $this-> slug. ".txt". '_'. \date("d.m.y h:m:s").$i;
+            $fileName = $textTest-> slug. ".txt". '_'. \date("d.m.y h:m:s").$i;
             $i++;
         }
-        $this->slug = $fileName;
-        return $this -> slug;
+        $textTest->slug = $fileName;
+        file_put_contents($fileName, serialize($textTest));
+        return $fileName;
     }
 
     public function read($slug)
@@ -43,12 +44,12 @@ class FileStorage extends Storage{
         return $arrayStorage['text'];
     }
 
-    public function update($slug, $object)
+    public function update($slug, $textTest)
     {
         $this->slug = $slug;
 
         if ( file_exists($this->slug)) {
-            file_put_contents($this->slug, serialize($object), FILE_USE_INCLUDE_PATH);
+            file_put_contents($this->slug, serialize($textTest), FILE_USE_INCLUDE_PATH);
         } else {
             return false;
         }
