@@ -34,14 +34,16 @@ class FileStorage extends Storage{
         return $fileName;
     }
 
-    public function read($slug)
+        public function read($slug)
     {
-        $this->slug = $slug;
-        $arrayStorage = [];
+        $texts2 = new TelegraphText();
+        if (file_exists($this->slug)) {
+            $texts2 = file_get_contents($this->slug);
+        } else {
+            print_r('Файла с таким именем не существует');
+        }
 
-        $arrayStorage = unserialize(file_get_contents($this->slug), $arrayStorage);
-
-        return $arrayStorage['text'];
+        return $texts2;
     }
 
     public function update($slug, $textTest)
