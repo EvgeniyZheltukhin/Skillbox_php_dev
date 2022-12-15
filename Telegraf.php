@@ -38,11 +38,10 @@ class FileStorage extends Storage{
     {
         $texts2 = new TelegraphText();
         if (file_exists($this->slug)) {
-            $texts2 = file_get_contents($this->slug);
+            $texts2 =  unserialize(file_get_contents($this->slug));
         } else {
             print_r('Файла с таким именем не существует');
         }
-
         return $texts2;
     }
 
@@ -63,7 +62,7 @@ class FileStorage extends Storage{
     {
         $telegraphText = new TelegraphText('Пушкин', 'Золотая рыбка');
         if (file_exists($this->slug)) {
-            unset($telegraphText);
+            unlink($this>$slug.".txt");
         } else {
             print_r('Файла с таким именем не существует');
         }
